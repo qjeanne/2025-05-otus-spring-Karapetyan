@@ -25,14 +25,13 @@ class CsvQuestionDaoTest {
 
     @Test
     fun `findAll should throw QuestionReadException when get resource throw exception`() {
-        val exceptionMessage = "message"
-        `when`(fileNameProvider.testFileName).thenThrow(RuntimeException(exceptionMessage))
+        `when`(fileNameProvider.testFileName).thenThrow(RuntimeException("message"))
 
         val exception = shouldThrow<QuestionReadException> {
             csvQuestionDao.findAll()
         }
 
-        exception shouldBe QuestionReadException(exceptionMessage)
+        exception shouldBe QuestionReadException("Error reading questions")
     }
 
     @Test

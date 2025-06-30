@@ -9,18 +9,20 @@ import java.io.InputStreamReader
 
 class CsvQuestionDao(private val fileNameProvider: TestFileNameProvider) : QuestionDao {
     override fun findAll(): List<Question> {
-        val inputStream = try {
-            javaClass.classLoader.getResourceAsStream(fileNameProvider.testFileName)
+        return try {
+            javaClass.classLoader
+                .getResourceAsStream(fileNameProvider.testFileName)
+                .use { inputStream ->
+                    CsvToBeanBuilder<QuestionDto>(inputStream?.let { InputStreamReader(it) })
+                        .withType(QuestionDto::class.java)
+                        .withSkipLines(1)
+                        .withSeparator(';')
+                        .build()
+                        .parse()
+                        .map { it.toDomainObject() }
+            }
         } catch (e: RuntimeException) {
-            throw QuestionReadException(e.message.toString(), e.cause)
+            throw QuestionReadException("Error reading questions")
         }
-
-        return CsvToBeanBuilder<QuestionDto>(InputStreamReader(inputStream))
-            .withType(QuestionDto::class.java)
-            .withSkipLines(1)
-            .withSeparator(';')
-            .build()
-            .parse()
-            .map { it.toDomainObject() }
     }
 }

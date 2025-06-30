@@ -1,6 +1,5 @@
 package ru.otus.hw.service
 
-import ru.otus.hw.domain.Question
 import java.io.PrintStream
 
 class StreamsIOService(private val printStream: PrintStream) : IOService {
