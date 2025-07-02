@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 import ru.otus.hw.domain.Answer
 import ru.otus.hw.domain.Question
 
-class ConsoleQuestionFormatterTest {
+class StringQuestionFormatterTest {
 
-    private val questionFormatter = ConsoleQuestionFormatter()
+    private val questionFormatter = StringQuestionFormatter()
 
     @Test
     fun `format should format questions with answers`() {

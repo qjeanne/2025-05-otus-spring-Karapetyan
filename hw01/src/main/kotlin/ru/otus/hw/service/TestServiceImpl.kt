@@ -15,6 +15,8 @@ class TestServiceImpl(
             ioService.printLine(questionFormatter.format(questions))
         } catch (e: QuestionReadException) {
             ioService.printLine("Unable to load questions")
+        } catch (e: Exception) {
+            ioService.printLine("Unexpected error")
         }
     }
 }

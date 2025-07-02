@@ -20,7 +20,7 @@
         <constructor-arg ref="fileNameProvider"/>
     </bean>
 
-    <bean id="questionFormatter" class="ru.otus.hw.service.ConsoleQuestionFormatter"/>
+    <bean id="questionFormatter" class="ru.otus.hw.service.StringQuestionFormatter"/>
 
     <bean id="testService" class="ru.otus.hw.service.TestServiceImpl">
         <constructor-arg index="0" ref="ioService"/>

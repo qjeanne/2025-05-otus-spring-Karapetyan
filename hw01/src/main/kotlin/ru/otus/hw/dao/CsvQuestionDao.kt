@@ -22,7 +22,7 @@ class CsvQuestionDao(private val fileNameProvider: TestFileNameProvider) : Quest
                         .map { it.toDomainObject() }
             }
         } catch (e: RuntimeException) {
-            throw QuestionReadException("Error reading questions")
+            throw QuestionReadException("Error reading questions", e)
         }
     }
 }
