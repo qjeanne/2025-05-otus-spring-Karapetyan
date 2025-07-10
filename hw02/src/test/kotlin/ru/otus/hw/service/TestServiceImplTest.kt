@@ -10,14 +10,11 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 import ru.otus.hw.dao.QuestionDao
 import ru.otus.hw.domain.Answer
 import ru.otus.hw.domain.Question
 import ru.otus.hw.domain.Student
 import ru.otus.hw.domain.TestResult
-import ru.otus.hw.exceptions.QuestionReadException
 
 @ExtendWith(MockitoExtension::class)
 class TestServiceImplTest {
@@ -65,15 +62,5 @@ class TestServiceImplTest {
         val inOrder = inOrder(ioService)
         inOrder.verify(ioService).printLine("")
         inOrder.verify(ioService).printFormattedLine("Please answer the questions below%n")
-    }
-
-    @Test
-    fun `executeTestFor should print error if throw exception`() {
-        `when`(questionDao.findAll()).thenThrow(QuestionReadException("test"))
-
-        testServiceImpl.executeTestFor(student)
-
-        verify(ioService).printLine("Unable to load questions")
-        verify(questionHandler, never()).handle(any(), any())
     }
 }

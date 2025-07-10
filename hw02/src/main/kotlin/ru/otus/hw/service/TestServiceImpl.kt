@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import ru.otus.hw.dao.QuestionDao
 import ru.otus.hw.domain.Student
 import ru.otus.hw.domain.TestResult
-import ru.otus.hw.exceptions.QuestionReadException
 
 @Service
 class TestServiceImpl(
@@ -15,15 +14,7 @@ class TestServiceImpl(
     override fun executeTestFor(student: Student): TestResult {
         val testResult = TestResult(student)
 
-        val questions = try {
-            questionDao.findAll()
-        } catch (e: QuestionReadException) {
-            ioService.printLine("Unable to load questions")
-            return testResult
-        } catch (e: Exception) {
-            ioService.printLine("Unexpected error")
-            return testResult
-        }
+        val questions = questionDao.findAll()
 
         ioService.printLine("")
         ioService.printFormattedLine("Please answer the questions below%n")
