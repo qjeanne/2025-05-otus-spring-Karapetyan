@@ -5,22 +5,24 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import ru.otus.hw.config.TestFileNameProvider
 import ru.otus.hw.domain.Answer
 import ru.otus.hw.domain.Question
 import ru.otus.hw.exceptions.QuestionReadException
 
+@SpringBootTest(classes = [CsvQuestionDao::class])
 @ExtendWith(MockitoExtension::class)
 class CsvQuestionDaoTest {
 
-    @Mock
+    @MockBean
     private lateinit var fileNameProvider: TestFileNameProvider
 
-    @InjectMocks
+    @Autowired
     private lateinit var csvQuestionDao: CsvQuestionDao
 
     @Test
