@@ -32,9 +32,9 @@ open class JdbcBookRepository(
                 g.id as genreId,
                 g.name as genreName
                 from books b 
-                join authors a on b.author_id = a.id
-                join books_genres bg on b.id = bg.book_id 
-                join genres g on bg.genre_id = g.id
+                left join authors a on b.author_id = a.id
+                left join books_genres bg on b.id = bg.book_id 
+                inner join genres g on bg.genre_id = g.id
                 where b.id = :id
             """.trimIndent(),
             params,
@@ -67,7 +67,7 @@ open class JdbcBookRepository(
         """
             select b.id as bookId, b.title as title, a.id as authorId, a.full_name as authorFullName
             from books b 
-            join authors a on b.author_id = a.id
+            left join authors a on b.author_id = a.id
         """.trimIndent(),
             BookRowMapper()
     )
@@ -76,8 +76,8 @@ open class JdbcBookRepository(
         """
             select b.id as bookId, g.id as genreId
             from books b 
-            join books_genres bg on b.id = bg.book_id 
-            join genres g on bg.genre_id = g.id
+            left join books_genres bg on b.id = bg.book_id 
+            inner join genres g on bg.genre_id = g.id
         """.trimIndent(),
         BookGenreRelationRowMapper()
     )
@@ -87,16 +87,11 @@ open class JdbcBookRepository(
         genres: List<Genre>,
         relations: List<BookGenreRelation>
     ) {
-        val relationsByBook = relations.groupBy { it.bookId }
-            .mapValues { relation ->
-                relation.value.map { it.genreId }.toSet()
-            }
-
+        val booksById = booksWithoutGenres.associateBy { it.id }
         val genresById = genres.associateBy { it.id }
 
-        return booksWithoutGenres.forEach { book ->
-            val genreIds = relationsByBook[book.id].orEmpty()
-            book.genres = genreIds.mapNotNull { genresById[it] }
+        relations.forEach { relation ->
+            booksById.getValue(relation.bookId).genres += genresById.getValue(relation.genreId)
         }
     }
 
@@ -126,7 +121,9 @@ open class JdbcBookRepository(
             params
         )
 
-        if (updatedRows == 0) throw EntityNotFoundException("No books found to update")
+        if (updatedRows == 0) {
+            throw EntityNotFoundException("No books found to update")
+        }
 
         removeGenresRelationsFor(book)
         batchInsertGenresRelationsFor(book)

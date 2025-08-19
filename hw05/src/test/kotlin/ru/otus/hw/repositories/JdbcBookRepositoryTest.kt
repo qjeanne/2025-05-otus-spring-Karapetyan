@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +15,6 @@ import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
 import ru.otus.hw.models.Genre
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JdbcTest
 @Import(JdbcBookRepository::class, JdbcGenreRepository::class)
 open class JdbcBookRepositoryTest {
@@ -103,28 +101,32 @@ open class JdbcBookRepositoryTest {
         repositoryJdbc.findById(1L) shouldBe null
     }
 
-    private fun getDbAuthors(): List<Author> {
-        return (1L..3L).map { id -> Author(id, "Author_$id") }
-    }
-
-    private fun getDbGenres(): List<Genre> {
-        return (1L..6L).map { id -> Genre(id, "Genre_$id") }
-    }
-
-    private fun getDbBooks(dbAuthors: List<Author>, dbGenres: List<Genre>): List<Book> {
-        return (1..3).map { id ->
-            Book(
-                id.toLong(),
-                "BookTitle_$id",
-                dbAuthors[id - 1],
-                dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)
-            )
+    companion object {
+        private fun getDbAuthors(): List<Author> {
+            return (1L..3L).map { id -> Author(id, "Author_$id") }
         }
-    }
 
-    private fun getDbBooks(): List<Book> {
-        val dbAuthors = getDbAuthors()
-        val dbGenres = getDbGenres()
-        return getDbBooks(dbAuthors, dbGenres)
+        private fun getDbGenres(): List<Genre> {
+            return (1L..6L).map { id -> Genre(id, "Genre_$id") }
+        }
+
+        @JvmStatic
+        private fun getDbBooks(): List<Book> {
+            val dbAuthors = getDbAuthors()
+            val dbGenres = getDbGenres()
+            return getDbBooks(dbAuthors, dbGenres)
+        }
+
+        @JvmStatic
+        private fun getDbBooks(dbAuthors: List<Author>, dbGenres: List<Genre>): List<Book> {
+            return (1..3).map { id ->
+                Book(
+                    id.toLong(),
+                    "BookTitle_$id",
+                    dbAuthors[id - 1],
+                    dbGenres.subList((id - 1) * 2, (id - 1) * 2 + 2)
+                )
+            }
+        }
     }
 }
