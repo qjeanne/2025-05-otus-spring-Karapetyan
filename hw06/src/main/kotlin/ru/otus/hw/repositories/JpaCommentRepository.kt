@@ -24,8 +24,7 @@ open class JpaCommentRepository(
         }
 
     override fun deleteById(id: Long) {
-        em.createQuery("delete from Comment c where c.id = :id")
-            .setParameter("id", id)
-            .executeUpdate()
+        val comment = em.find(Comment::class.java, id)
+        em.remove(comment)
     }
 }

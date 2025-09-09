@@ -3,16 +3,18 @@ package ru.otus.hw.repositories
 import jakarta.persistence.EntityManager
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType
 import org.springframework.stereotype.Repository
+import ru.otus.hw.converters.BookConverter
 import ru.otus.hw.models.Book
 
 @Repository
 open class JpaBookRepository(
-    private val em: EntityManager
+    private val em: EntityManager,
+    private val bookConverter: BookConverter
 ) : BookRepository {
     override fun findById(id: Long): Book? {
         val book = em.find(Book::class.java, id)
 
-        book.genres.size
+        bookConverter.toDto(book)
 
         return book
     }
@@ -23,7 +25,7 @@ open class JpaBookRepository(
             .setHint(EntityGraphType.FETCH.key, entityGraph)
             .resultList
 
-        books.forEach { it.genres.size }
+        bookConverter.toDtoList(books)
 
         return books
     }
@@ -37,8 +39,7 @@ open class JpaBookRepository(
         }
 
     override fun deleteById(id: Long) {
-        em.createQuery("delete from Book b where b.id = :id")
-            .setParameter("id", id)
-            .executeUpdate()
+        val book = em.find(Book::class.java, id)
+        em.remove(book)
     }
 }

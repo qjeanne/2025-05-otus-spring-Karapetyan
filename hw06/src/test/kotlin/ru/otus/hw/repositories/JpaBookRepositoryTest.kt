@@ -12,12 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
+import ru.otus.hw.converters.AuthorConverter
+import ru.otus.hw.converters.BookConverter
+import ru.otus.hw.converters.GenreConverter
 import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
 import ru.otus.hw.models.Genre
 
 @DataJpaTest
-@Import(JpaBookRepository::class)
+@Import(
+    JpaBookRepository::class,
+    BookConverter::class,
+    AuthorConverter::class,
+    GenreConverter::class
+)
 open class JpaBookRepositoryTest {
 
     @Autowired

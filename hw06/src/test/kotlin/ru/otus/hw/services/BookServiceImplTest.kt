@@ -4,10 +4,28 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import ru.otus.hw.Application
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.context.annotation.Import
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import ru.otus.hw.converters.AuthorConverter
+import ru.otus.hw.converters.BookConverter
+import ru.otus.hw.converters.GenreConverter
+import ru.otus.hw.repositories.JpaAuthorRepository
+import ru.otus.hw.repositories.JpaBookRepository
+import ru.otus.hw.repositories.JpaGenreRepository
 
-@SpringBootTest(classes = [Application::class])
+@DataJpaTest
+@Transactional(propagation = Propagation.NEVER)
+@Import(
+    BookServiceImpl::class,
+    JpaAuthorRepository::class,
+    JpaGenreRepository::class,
+    JpaBookRepository::class,
+    BookConverter::class,
+    AuthorConverter::class,
+    GenreConverter::class
+)
 open class BookServiceImplTest {
 
     @Autowired
