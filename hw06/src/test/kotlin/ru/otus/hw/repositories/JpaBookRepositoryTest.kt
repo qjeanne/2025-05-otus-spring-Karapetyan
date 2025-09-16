@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Import
 import ru.otus.hw.converters.AuthorConverter
 import ru.otus.hw.converters.BookConverter
 import ru.otus.hw.converters.GenreConverter
+import ru.otus.hw.dto.AuthorDto
+import ru.otus.hw.dto.BookDto
+import ru.otus.hw.dto.GenreDto
 import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
 import ru.otus.hw.models.Genre
@@ -34,9 +37,9 @@ open class JpaBookRepositoryTest {
     @Autowired
     private lateinit var em: TestEntityManager
 
-    private lateinit var dbAuthors: List<Author>
-    private lateinit var dbGenres: List<Genre>
-    private lateinit var dbBooks: List<Book>
+    private lateinit var dbAuthors: List<AuthorDto>
+    private lateinit var dbGenres: List<GenreDto>
+    private lateinit var dbBooks: List<BookDto>
 
     @BeforeEach
     fun setUp() {
@@ -47,7 +50,7 @@ open class JpaBookRepositoryTest {
 
     @ParameterizedTest
     @MethodSource("getDbBooks")
-    fun `should return correct book by id`(expectedBook: Book) {
+    fun `should return correct book by id`(expectedBook: BookDto) {
         val actualBook = repositoryJpa.findById(expectedBook.id)
 
         actualBook shouldBe expectedBook
@@ -68,8 +71,8 @@ open class JpaBookRepositoryTest {
         val expectedBook = Book(
             id = 0,
             title = "BookTitle_10500",
-            author = dbAuthors[0],
-            genres = listOf(dbGenres[0], dbGenres[2])
+            author = Author(id = dbAuthors[0].id, fullName = dbAuthors[0].fullName),
+            genres = listOf(dbGenres[0], dbGenres[2]).map { Genre(id = it.id, name = it.name) }
         )
 
         val returnedBook = repositoryJpa.save(expectedBook)
@@ -77,10 +80,10 @@ open class JpaBookRepositoryTest {
         returnedBook should {
             it.id > 0
             it.title shouldBe expectedBook.title
-            it.author shouldBe expectedBook.author
-            it.genres shouldContainExactly expectedBook.genres
+            it.author shouldBe dbAuthors[0]
+            it.genres shouldContainExactly listOf(dbGenres[0], dbGenres[2])
         }
-        em.find(Book::class.java, returnedBook.id) shouldBe returnedBook
+        em.find(Book::class.java, returnedBook.id) shouldBe expectedBook
     }
 
     @Test
@@ -88,8 +91,8 @@ open class JpaBookRepositoryTest {
         val expectedBook = Book(
             id = 1L,
             title = "BookTitle_10500",
-            author = dbAuthors[2],
-            genres = listOf(dbGenres[4], dbGenres[5])
+            author = Author(id = dbAuthors[2].id, fullName = dbAuthors[2].fullName),
+            genres = listOf(dbGenres[4], dbGenres[5]).map { Genre(id = it.id, name = it.name) }
         )
         em.find(Book::class.java, expectedBook.id) shouldNotBe expectedBook
 
@@ -98,10 +101,10 @@ open class JpaBookRepositoryTest {
         returnedBook should {
             it.id > 0
             it.title shouldBe expectedBook.title
-            it.author shouldBe expectedBook.author
-            it.genres shouldContainExactly expectedBook.genres
+            it.author shouldBe dbAuthors[2]
+            it.genres shouldContainExactly listOf(dbGenres[4], dbGenres[5])
         }
-        em.find(Book::class.java, returnedBook.id) shouldBe returnedBook
+        em.find(Book::class.java, returnedBook.id) shouldBe expectedBook
     }
 
     @Test
@@ -115,25 +118,25 @@ open class JpaBookRepositoryTest {
     }
 
     companion object {
-        private fun getDbAuthors(): List<Author> {
-            return (1L..3L).map { id -> Author(id, "Author_$id") }
+        private fun getDbAuthors(): List<AuthorDto> {
+            return (1L..3L).map { id -> AuthorDto(id, "Author_$id") }
         }
 
-        private fun getDbGenres(): List<Genre> {
-            return (1L..6L).map { id -> Genre(id, "Genre_$id") }
+        private fun getDbGenres(): List<GenreDto> {
+            return (1L..6L).map { id -> GenreDto(id, "Genre_$id") }
         }
 
         @JvmStatic
-        private fun getDbBooks(): List<Book> {
+        private fun getDbBooks(): List<BookDto> {
             val dbAuthors = getDbAuthors()
             val dbGenres = getDbGenres()
             return getDbBooks(dbAuthors, dbGenres)
         }
 
         @JvmStatic
-        private fun getDbBooks(dbAuthors: List<Author>, dbGenres: List<Genre>): List<Book> {
+        private fun getDbBooks(dbAuthors: List<AuthorDto>, dbGenres: List<GenreDto>): List<BookDto> {
             return (1..3).map { id ->
-                Book(
+                BookDto(
                     id.toLong(),
                     "BookTitle_$id",
                     dbAuthors[id - 1],

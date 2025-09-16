@@ -36,9 +36,9 @@ open class JpaCommentRepositoryTest {
         dbGenres = getDbGenres()
         dbBooks = getDbBooks(dbAuthors, dbGenres)
         dbComments = listOf(
-            Comment(1L, "Comment_1", dbBooks[0].id),
-            Comment(2L, "Comment_2", dbBooks[1].id),
-            Comment(3L, "Comment_3", dbBooks[1].id)
+            Comment(1L, "Comment_1", dbBooks[0]),
+            Comment(2L, "Comment_2", dbBooks[1]),
+            Comment(3L, "Comment_3", dbBooks[1])
         )
     }
 
@@ -54,7 +54,7 @@ open class JpaCommentRepositoryTest {
     @Test
     fun `should return correct comment list by book id`() {
         val id = 2L
-        val expectedComments = dbComments.filter { it.bookId == id }
+        val expectedComments = dbComments.filter { it.book.id == id }
 
         val actualComments = repositoryJpa.findByBookId(id)
 
@@ -67,7 +67,7 @@ open class JpaCommentRepositoryTest {
         val expectedComment = Comment(
             id = 0,
             text = "Test",
-            bookId = dbBooks[0].id
+            book = dbBooks[0]
         )
 
         val returnedComment = repositoryJpa.save(expectedComment)
@@ -75,7 +75,7 @@ open class JpaCommentRepositoryTest {
         returnedComment should {
             it.id > 0
             it.text shouldBe expectedComment.text
-            it.bookId shouldBe expectedComment.bookId
+            it.book shouldBe expectedComment.book
         }
         em.find(Comment::class.java, returnedComment.id) shouldBe returnedComment
     }
@@ -85,7 +85,7 @@ open class JpaCommentRepositoryTest {
         val expectedComment = Comment(
             id = 1L,
             text = "Updated",
-            bookId = dbBooks[0].id
+            book = dbBooks[0]
         )
         em.find(Comment::class.java, expectedComment.id) shouldNotBe expectedComment
 
@@ -94,7 +94,7 @@ open class JpaCommentRepositoryTest {
         returnedComment should {
             it.id > 0
             it.text shouldBe expectedComment.text
-            it.bookId shouldBe expectedComment.bookId
+            it.book shouldBe expectedComment.book
         }
         em.find(Comment::class.java, returnedComment.id) shouldBe returnedComment
     }

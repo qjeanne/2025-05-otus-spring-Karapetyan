@@ -4,19 +4,21 @@ import org.springframework.stereotype.Component
 import ru.otus.hw.dto.AuthorDto
 import ru.otus.hw.dto.BookDto
 import ru.otus.hw.dto.GenreDto
+import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
+import ru.otus.hw.models.Genre
 
 @Component
 class BookConverter(
     private val authorConverter: AuthorConverter,
     private val genreConverter: GenreConverter
 ) {
-    fun bookToString(book: Book): String {
+    fun bookToString(book: BookDto): String {
         val genresString = book.genres
             .joinToString(separator = ", ") {
-                "{${genreConverter.genreToString(it)}}"
+                "{${genreConverter.genreToString(Genre(id = it.id, name = it.name))}}"
             }
-        val authorString = authorConverter.authorToString(book.author)
+        val authorString = authorConverter.authorToString(Author(id = book.author.id, fullName = book.author.fullName))
 
         return "Id: ${book.id}, title: ${book.title}, author: $authorString, genres: $genresString"
     }

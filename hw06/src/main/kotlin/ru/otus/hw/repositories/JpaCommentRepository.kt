@@ -11,7 +11,7 @@ open class JpaCommentRepository(
     override fun findById(id: Long): Comment? = em.find(Comment::class.java, id)
 
     override fun findByBookId(id: Long): List<Comment> =
-        em.createQuery("select c from Comment c where c.bookId = :id", Comment::class.java)
+        em.createQuery("select c from Comment c where c.book.id = :id", Comment::class.java)
             .setParameter("id", id)
             .resultList
 
