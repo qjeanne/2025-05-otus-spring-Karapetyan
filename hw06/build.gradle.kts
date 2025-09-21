@@ -7,6 +7,11 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     id("checkstyle")
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("plugin.allopen") version "1.9.0"
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
 }
 
 group = "ru.otus.hw"
