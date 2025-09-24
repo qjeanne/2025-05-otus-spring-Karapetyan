@@ -1,0 +1,33 @@
+package ru.otus.hw.repositories
+
+import jakarta.persistence.EntityManager
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType
+import org.springframework.stereotype.Repository
+import ru.otus.hw.models.Book
+
+@Repository
+open class JpaBookRepository(
+    private val em: EntityManager
+) : BookRepository {
+    override fun findById(id: Long): Book? = em.find(Book::class.java, id)
+
+    override fun findAll(): List<Book> {
+        val entityGraph = em.getEntityGraph("authors-entity-graph")
+        return em.createQuery("select b from Book b", Book::class.java)
+            .setHint(EntityGraphType.FETCH.key, entityGraph)
+            .resultList
+    }
+
+    override fun save(book: Book): Book =
+        if (book.id == 0L) {
+            em.persist(book)
+            book
+        } else {
+            em.merge(book)
+        }
+
+    override fun deleteById(id: Long) {
+        val book = em.find(Book::class.java, id)
+        em.remove(book)
+    }
+}
