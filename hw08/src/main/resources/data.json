@@ -1,0 +1,60 @@
+{
+       "authors": [
+              { "id": 1, "fullName": "Author_1" },
+              { "id": 2, "fullName": "Author_2" },
+              { "id": 3, "fullName": "Author_3" }
+       ],
+       "genres": [
+              { "id": 1, "name": "Genre_1" },
+              { "id": 2, "name": "Genre_2" },
+              { "id": 3, "name": "Genre_3" },
+              { "id": 4, "name": "Genre_4" },
+              { "id": 5, "name": "Genre_5" },
+              { "id": 6, "name": "Genre_6" }
+       ],
+       "books": [
+              {
+                     "id": 1,
+                     "title": "BookTitle_1",
+                     "author": { "id": 1, "fullName": "Author_1" },
+                     "genres": [{ "id": 1, "name": "Genre_1" }, { "id": 2, "name": "Genre_2" }]
+              },
+              {
+                     "id": 2,
+                     "title": "BookTitle_2",
+                     "author": { "id": 2, "fullName": "Author_2" },
+                     "genres": [{ "id": 3, "name": "Genre_3" }, { "id": 4, "name": "Genre_4" }]
+              },
+              {
+                     "id": 3,
+                     "title": "BookTitle_3",
+                     "author": { "id": 3, "fullName": "Author_3" },
+                     "genres": [{ "id": 5, "name": "Genre_5" }, { "id": 6, "name": "Genre_6" }]
+              }
+       ],
+       "comments": [
+              { "id": 1, "text": "Comment_1", "book": {
+                     "id": 1,
+                     "title": "BookTitle_1",
+                     "author": { "id": 1, "fullName": "Author_1" },
+                     "genres": [{ "id": 1, "name": "Genre_1" }, { "id": 2, "name": "Genre_2" }]
+              } },
+              { "id": 2, "text": "Comment_2", "book": {
+                     "id": 2,
+                     "title": "BookTitle_2",
+                     "author": { "id": 2, "fullName": "Author_2" },
+                     "genres": [{ "id": 3, "name": "Genre_3" }, { "id": 4, "name": "Genre_4" }]
+              } },
+              { "id": 3, "text": "Comment_3", "book": {
+                     "id": 2,
+                     "title": "BookTitle_2",
+                     "author": { "id": 2, "fullName": "Author_2" },
+                     "genres": [{ "id": 3, "name": "Genre_3" }, { "id": 4, "name": "Genre_4" }]
+              } }
+       ],
+
+       "sequences": [
+              { "id": "books", "seq": 3 },
+              { "id": "comments", "seq": 3 }
+       ]
+}
