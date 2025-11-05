@@ -3,4 +3,4 @@ package ru.otus.hw.repositories
 import org.springframework.data.mongodb.repository.MongoRepository
 import ru.otus.hw.models.Genre
 
-interface GenreRepository : MongoRepository<Genre, Long>
+interface GenreRepository : MongoRepository<Genre, String>

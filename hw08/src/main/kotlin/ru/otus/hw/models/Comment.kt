@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field
 @Document(collection = "comments")
 data class Comment(
     @Id
-    var id: Long,
+    var id: String? = null,
 
     @Field(name = "text")
     var text: String,

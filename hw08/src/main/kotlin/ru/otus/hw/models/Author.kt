@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.Indexed
 @Document(collection = "authors")
 data class Author(
     @Id
-    var id: Long,
+    var id: String? = null,
 
     @Indexed(name = "full_name", unique = true)
     var fullName: String

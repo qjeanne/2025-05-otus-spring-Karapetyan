@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "books")
 data class Book(
     @Id
-    var id: Long,
+    var id: String? = null,
 
     var title: String,
 

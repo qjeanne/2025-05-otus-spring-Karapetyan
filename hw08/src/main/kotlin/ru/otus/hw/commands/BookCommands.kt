@@ -16,24 +16,24 @@ class BookCommands(
         }
 
     @Command(command = ["bbid"], description = "Find book by id")
-    fun findBookById(id: Long): String = bookService.findById(id)
+    fun findBookById(id: String): String = bookService.findById(id)
         ?.let { bookConverter.bookToString(it) }
         ?: "Book with id $id not found"
 
     @Command(command = ["bins"], description = "Insert book")
-    fun insertBook(title: String, authorId: Long, genresIds: Set<Long>): String {
+    fun insertBook(title: String, authorId: String, genresIds: Set<String>): String {
         val savedBook = bookService.insert(title, authorId, genresIds)
         return bookConverter.bookToString(savedBook)
     }
 
     @Command(command = ["bupd"], description = "Update book")
-    fun updateBook(id: Long, title: String, authorId: Long, genresIds: Set<Long>): String {
+    fun updateBook(id: String, title: String, authorId: String, genresIds: Set<String>): String {
         val savedBook = bookService.update(id, title, authorId, genresIds)
         return bookConverter.bookToString(savedBook)
     }
 
     @Command(command = ["bdel"], description = "Delete book by id")
-    fun deleteBook(id: Long) {
+    fun deleteBook(id: String) {
         bookService.deleteById(id)
     }
 }

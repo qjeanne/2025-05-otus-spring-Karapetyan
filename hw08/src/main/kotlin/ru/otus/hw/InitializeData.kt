@@ -9,15 +9,13 @@ import org.springframework.stereotype.Component
 import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
 import ru.otus.hw.models.Comment
-import ru.otus.hw.models.DatabaseSequence
 import ru.otus.hw.models.Genre
 
 data class DataFile(
     val authors: List<Author>,
     val genres: List<Genre>,
     val books: List<Book>,
-    val comments: List<Comment>,
-    val sequences: List<DatabaseSequence>
+    val comments: List<Comment>
 )
 
 @Component
@@ -37,6 +35,5 @@ class InitializeData(
         mongoTemplate.insert(data.genres, "genres")
         mongoTemplate.insert(data.books, "books")
         mongoTemplate.insert(data.comments, "comments")
-        mongoTemplate.insert(data.sequences, "sequences")
     }
 }

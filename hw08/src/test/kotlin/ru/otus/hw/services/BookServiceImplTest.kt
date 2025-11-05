@@ -8,16 +8,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import ru.otus.hw.MongoRepositoryTest
-import ru.otus.hw.events.BookModelEventsListener
 import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
 import ru.otus.hw.models.Genre
 
-@Import(
-    BookServiceImpl::class,
-    BookModelEventsListener::class,
-    SequenceGeneratorService::class
-)
+@Import(BookServiceImpl::class)
 open class BookServiceImplTest: MongoRepositoryTest() {
 
     @Autowired
@@ -25,7 +20,7 @@ open class BookServiceImplTest: MongoRepositoryTest() {
 
     @Test
     fun `findById should return the book`() {
-        val id = 1L
+        val id = "1"
 
         val book = bookService.findById(id)
 
@@ -34,7 +29,7 @@ open class BookServiceImplTest: MongoRepositoryTest() {
 
     @Test
     fun `findById should return null if book with this id not exist`() {
-        val book = bookService.findById(10L)
+        val book = bookService.findById("10")
 
         book.shouldBeNull()
     }
@@ -49,13 +44,12 @@ open class BookServiceImplTest: MongoRepositoryTest() {
     @Test
     fun `insert should insert the book`() {
         val title = "newTitle"
-        val authorId = 1L
-        val genreIds = setOf(1L, 5L)
+        val authorId = "1"
+        val genreIds = setOf("1", "5")
 
         bookService.insert(title, authorId, genreIds)
 
         mongoTemplate.findAll(Book::class.java).last() should { book ->
-            book.id shouldBe 4L
             book.title shouldBe title
             book.author shouldBe mongoTemplate.findById(authorId, Author::class.java)
             book.genres.zip(genreIds).map {
@@ -66,10 +60,10 @@ open class BookServiceImplTest: MongoRepositoryTest() {
 
     @Test
     fun `update should update the book`() {
-        val bookId = 1L
+        val bookId = "1"
         val title = "updatedTitle"
-        val authorId = 2L
-        val genreIds = setOf(3L, 4L)
+        val authorId = "2"
+        val genreIds = setOf("3", "4")
 
         bookService.update(bookId, title, authorId, genreIds)
 
@@ -84,7 +78,7 @@ open class BookServiceImplTest: MongoRepositoryTest() {
 
     @Test
     fun `delete should delete the book`() {
-        val bookId = 1L
+        val bookId = "1"
 
         bookService.deleteById(bookId)
 

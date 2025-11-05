@@ -51,10 +51,5 @@
                      "author": { "id": 2, "fullName": "Author_2" },
                      "genres": [{ "id": 3, "name": "Genre_3" }, { "id": 4, "name": "Genre_4" }]
               } }
-       ],
-
-       "sequences": [
-              { "id": "books", "seq": 3 },
-              { "id": "comments", "seq": 3 }
        ]
 }

@@ -19,23 +19,23 @@ open class CommentServiceImpl(
 ) : CommentService {
 
     @Transactional(readOnly = true)
-    override fun findById(id: Long): Comment? = commentRepository.findById(id).getOrNull()
+    override fun findById(id: String): Comment? = commentRepository.findById(id).getOrNull()
 
     @Transactional(readOnly = true)
-    override fun findByBookId(id: Long): List<Comment> = commentRepository.findByBookId(id)
+    override fun findByBookId(id: String): List<Comment> = commentRepository.findByBookId(id)
 
     @Transactional
-    override fun insert(text: String, bookId: Long): Comment =
-        save(0, text, bookId)
+    override fun insert(text: String, bookId: String): Comment =
+        save(null, text, bookId)
 
     @Transactional
-    override fun update(id: Long, text: String, bookId: Long): Comment =
+    override fun update(id: String, text: String, bookId: String): Comment =
         save(id, text, bookId)
 
     @Transactional
-    override fun deleteById(id: Long) = commentRepository.deleteById(id)
+    override fun deleteById(id: String) = commentRepository.deleteById(id)
 
-    private fun save(id: Long, text: String, bookId: Long): Comment {
+    private fun save(id: String?, text: String, bookId: String): Comment {
         val book = bookRepository.findById(bookId).getOrElse {
             throw EntityNotFoundException("Book with id $bookId not found")
         }

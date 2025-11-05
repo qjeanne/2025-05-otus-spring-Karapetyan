@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "genres")
 data class Genre(
     @Id
-    var id: Long,
+    var id: String? = null,
 
     @Indexed(name = "name", unique = true)
     val name: String
