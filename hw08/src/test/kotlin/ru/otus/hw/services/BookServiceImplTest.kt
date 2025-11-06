@@ -1,5 +1,6 @@
 package ru.otus.hw.services
 
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Import
 import ru.otus.hw.MongoRepositoryTest
 import ru.otus.hw.models.Author
 import ru.otus.hw.models.Book
+import ru.otus.hw.models.Comment
 import ru.otus.hw.models.Genre
 
 @Import(BookServiceImpl::class)
@@ -64,16 +66,23 @@ open class BookServiceImplTest: MongoRepositoryTest() {
         val title = "updatedTitle"
         val authorId = "2"
         val genreIds = setOf("3", "4")
+        val newAuthor = mongoTemplate.findById(authorId, Author::class.java)
+        val newGenres = genreIds.mapNotNull { mongoTemplate.findById(it, Genre::class.java) }
 
         bookService.update(bookId, title, authorId, genreIds)
 
         mongoTemplate.findById(bookId, Book::class.java).shouldNotBeNull() should { book ->
             book.title shouldBe title
-            book.author shouldBe mongoTemplate.findById(authorId, Author::class.java)
-            book.genres.zip(genreIds).map {
-                it.first shouldBe mongoTemplate.findById(it.second, Genre::class.java)
-            }
+            book.author shouldBe newAuthor
+            book.genres shouldContainExactly newGenres
         }
+        mongoTemplate.findAll(Comment::class.java)
+            .filter { it.book.id == bookId }
+            .map { comment ->
+                comment.book.title shouldBe title
+                comment.book.author shouldBe newAuthor
+                comment.book.genres shouldContainExactly newGenres
+            }
     }
 
     @Test

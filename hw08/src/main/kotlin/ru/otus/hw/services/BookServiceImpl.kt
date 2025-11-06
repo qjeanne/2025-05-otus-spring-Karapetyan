@@ -1,9 +1,14 @@
 package ru.otus.hw.services
 
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria.where
+import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.otus.hw.exceptions.EntityNotFoundException
 import ru.otus.hw.models.Book
+import ru.otus.hw.models.Comment
 import ru.otus.hw.repositories.AuthorRepository
 import ru.otus.hw.repositories.BookRepository
 import ru.otus.hw.repositories.CommentRepository
@@ -16,6 +21,7 @@ open class BookServiceImpl(
     private val genreRepository: GenreRepository,
     private val commentRepository: CommentRepository,
     private val bookRepository: BookRepository,
+    private val mongoTemplate: MongoTemplate
 ) : BookService {
 
     @Transactional(readOnly = true)
@@ -52,10 +58,9 @@ open class BookServiceImpl(
 
         val book = Book(id, title, author, genres)
         if (id != null) {
-            commentRepository.saveAll(
-                commentRepository.findByBookId(id)
-                    .onEach { it.book = book }
-            )
+            val query = Query().addCriteria(where("book.id").`is`(id))
+            val update = Update().set("book", book)
+            mongoTemplate.updateMulti(query, update, Comment::class.java)
         }
         return bookRepository.save(book)
     }
