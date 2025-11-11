@@ -43,8 +43,7 @@ class CommentControllerTest {
 
     @Test
     fun `should render error page when book not found`() {
-        val message = "test"
-        every { commentService.insert(any(), any()) } throws EntityNotFoundException(message)
+        every { commentService.insert(any(), any()) } throws EntityNotFoundException.BookNotFound(1)
 
         mockMvc.post("/books/10/comments") {
             param("text", "text")
@@ -54,7 +53,7 @@ class CommentControllerTest {
                     name("error")
                 }
                 model {
-                    attribute("message", message)
+                    attribute("message", "Book not found")
                 }
             }
     }

@@ -17,7 +17,7 @@ open class CommentServiceImpl(
     @Transactional(readOnly = true)
     override fun findById(id: Long): CommentResponseDto = commentRepository.findById(id)
         ?.let { CommentResponseDto.fromDomainObject(it) }
-        ?: throw EntityNotFoundException("Comment with id $id not found")
+        ?: throw EntityNotFoundException.CommentNotFound(id)
 
     @Transactional(readOnly = true)
     override fun findByBookId(id: Long): List<CommentResponseDto> = commentRepository.findByBookId(id)
@@ -36,13 +36,13 @@ open class CommentServiceImpl(
 
     private fun save(id: Long, text: String, bookId: Long): CommentResponseDto {
         val book = bookRepository.findById(bookId)
-            ?: throw EntityNotFoundException("Book with id $bookId not found")
+            ?: throw EntityNotFoundException.BookNotFound(bookId)
 
         if (id > 0) {
             val comment = commentRepository.findById(id)
-                ?: throw EntityNotFoundException("Comment with id $id not found")
+                ?: throw EntityNotFoundException.CommentNotFound(id)
 
-            if (comment.book.id != bookId) throw EntityNotFoundException("Comment with id $id not found for book with id $bookId")
+            if (comment.book.id != bookId) throw EntityNotFoundException.CommentNotFoundForBook(id, bookId)
         }
 
         val newComment = Comment(

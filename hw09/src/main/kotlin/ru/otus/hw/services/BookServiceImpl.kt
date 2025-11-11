@@ -19,7 +19,7 @@ open class BookServiceImpl(
     @Transactional(readOnly = true)
     override fun findById(id: Long): BookResponseDto = bookRepository.findById(id)
         ?.let { BookResponseDto.fromDomainObject(it) }
-        ?: throw EntityNotFoundException("Book with id $id not found")
+        ?: throw EntityNotFoundException.BookNotFound(id)
 
     @Transactional(readOnly = true)
     override fun findAll(): List<BookResponseDto> = bookRepository.findAll()
@@ -39,14 +39,14 @@ open class BookServiceImpl(
     private fun save(id: Long, title: String, authorId: Long, genresIds: Set<Long>): BookResponseDto {
         require(genresIds.isNotEmpty()) { "Genres ids must not be null" }
 
-        if (id > 0 && !bookRepository.existsById(id)) throw EntityNotFoundException("Book with id $id not found")
+        if (id > 0 && !bookRepository.existsById(id)) throw EntityNotFoundException.BookNotFound(id)
 
         val author = authorRepository.findById(authorId)
-            ?: throw EntityNotFoundException("Author with id $authorId not found")
+            ?: throw EntityNotFoundException.AuthorNotFound(authorId)
 
         val genres = genreRepository.findAllByIdIn(genresIds)
         if (genres.isEmpty() || genresIds.size != genres.size) {
-            throw EntityNotFoundException("One or all genres with ids $genresIds not found")
+            throw EntityNotFoundException.GenresNotFound(genresIds)
         }
 
         val book = Book(id, title, author, genres)

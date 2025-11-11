@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import ru.otus.hw.dto.BookRequestDto
 import ru.otus.hw.services.AuthorService
 import ru.otus.hw.services.BookService
@@ -14,14 +13,13 @@ import ru.otus.hw.services.CommentService
 import ru.otus.hw.services.GenreService
 
 @Controller
-@RequestMapping("/books")
 class BookController(
     private val bookService: BookService,
     private val commentService: CommentService,
     private val authorService: AuthorService,
     private val genreService: GenreService
 ) {
-    @GetMapping
+    @GetMapping("/books")
     fun getAllBooks(
         model: Model
     ): String {
@@ -30,7 +28,7 @@ class BookController(
         return "books-list"
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/books/{id}")
     fun getBook(
         @PathVariable id: Long,
         model: Model
@@ -50,7 +48,7 @@ class BookController(
         return "book-edit"
     }
 
-    @GetMapping("/new")
+    @GetMapping("/books/new")
     fun getBook(
         model: Model
     ): String {
@@ -63,7 +61,7 @@ class BookController(
         return "book-new"
     }
 
-    @PostMapping
+    @PostMapping("/books")
     fun insertBook(
         book: BookRequestDto
     ): String {
@@ -71,7 +69,7 @@ class BookController(
         return "redirect:/books"
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/books/{id}")
     fun updateBook(
         @PathVariable id: Long,
         book: BookRequestDto
@@ -80,7 +78,7 @@ class BookController(
         return "redirect:/books/$id"
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/books/{id}")
     fun deleteBook(
         @PathVariable id: Long
     ): String {

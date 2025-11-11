@@ -6,7 +6,6 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.web.servlet.MockMvc
@@ -94,7 +93,7 @@ class BookControllerTest {
                     attribute("comments", comments)
                     attribute("authors", authors)
                     attribute("genres", genres)
-                    attribute("genres", genres.map { it.id })
+                    attribute("selectedGenreIds", books[0].genres.map { it.id })
                 }
             }
     }
@@ -118,8 +117,7 @@ class BookControllerTest {
 
     @Test
     fun `should render error page when book not found`() {
-        val message = "test"
-        every { bookService.findById(any()) } throws EntityNotFoundException(message)
+        every { bookService.findById(any()) } throws EntityNotFoundException.BookNotFound(1)
 
         mockMvc.get("/books/10")
             .andExpect {
@@ -127,7 +125,7 @@ class BookControllerTest {
                     name("error")
                 }
                 model {
-                    attribute("message", message)
+                    attribute("message", "Book not found")
                 }
             }
     }
