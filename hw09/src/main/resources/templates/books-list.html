@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="header :: header-head"></th:block>
+
+        <title>Books List</title>
+        <style>
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid steelblue; padding: 5px; }
+            td:first-child, td:last-child { width: 50px; }
+            .delete-button { color: red; cursor: pointer; }
+        </style>
+    </head>
+    <body>
+        <div th:replace="header :: header-body"></div>
+
+        <h3>Books</h3>
+        <form th:action="@{/books/new}" method="get" style="display:inline;">
+            <button type="submit">New Book</button><br/>
+        </form><br/>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genres</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}">1</td>
+                <td th:text="${book.title}">Book Title</td>
+                <td th:text="${book.author.fullName}">Author</td>
+                <td>
+                    <span th:each="genre, iterStat : ${book.genres}">
+                        <span th:text="${genre.name}"></span><span th:text="${iterStat.last ? '' : ', '}"></span>
+                    </span>
+                </td>
+                <td>
+                    <form th:action="@{/books/{id}(id=${book.id})}" method="get" style="display:inline;">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <form th:action="@{/books/{id}(id=${book.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

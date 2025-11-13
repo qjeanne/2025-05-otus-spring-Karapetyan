@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="header :: header-head"></th:block>
+
+        <title>New Book</title>
+        <style>
+            table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+            th, td { border: 1px solid steelblue; padding: 5px; }
+            .action-btn { cursor: pointer; color: red; }
+        </style>
+    </head>
+    <body>
+        <div th:replace="header :: header-body"></div>
+
+        <h3>Book</h3>
+        <form th:action="@{/books}" method="post">
+            Title: <input type="text" name="title" /><br/>
+            Author:
+            <select name="authorId">
+                <option th:each="author : ${authors}"
+                        th:value="${author.id}"
+                        th:text="${author.fullName}"
+                ></option>
+            </select><br/>
+            Genre:
+            <select name="genresIds" multiple>
+                <option th:each="genre : ${genres}"
+                        th:value="${genre.id}"
+                        th:text="${genre.name}"
+                ></option>
+            </select><br/>
+            <button type="submit">Save</button>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="header :: header-head"></head>
+    <body>
+        <div th:replace="header :: header-body"></div>
+
+        <h3>Error!</h3>
+        <img src="/warning.png" alt="Error Icon" width="100" />
+        <p th:text="${message}">Something went wrong.</p>
+    </body>
+</html>

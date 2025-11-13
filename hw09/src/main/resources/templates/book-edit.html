@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="header :: header-head"></th:block>
+
+        <title>Edit Book</title>
+        <style>
+            table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+            th, td { border: 1px solid steelblue; padding: 5px; }
+            .action-btn { cursor: pointer; color: red; }
+        </style>
+    </head>
+    <body>
+        <div th:replace="header :: header-body"></div>
+
+        <h3>Book</h3>
+        <form th:action="@{/books/{id}(id=${book.id})}" th:object="${book}" method="post">
+            Title: <input type="text" th:field="*{title}" /><br/>
+            Author:
+            <select name="authorId">
+                <option th:each="author : ${authors}"
+                        th:value="${author.id}"
+                        th:text="${author.fullName}"
+                        th:selected="${book.author != null and book.author.id == author.id}">
+                ></option>
+            </select><br/>
+            Genre:
+            <select name="genresIds" multiple>
+                <option th:each="genre : ${genres}"
+                        th:value="${genre.id}"
+                        th:text="${genre.name}"
+                        th:selected="${selectedGenreIds.contains(genre.id)}"
+                ></option>
+            </select><br/>
+            <button type="submit">Save</button>
+        </form>
+
+        <h3>Comments</h3>
+        <h4>Add Comment:</h4>
+        <form th:action="@{/books/{id}/comments(id=${book.id})}" method="post">
+            <input type="text" name="text" placeholder="New comment" />
+            <button type="submit">Add</button>
+        </form>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Text</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.id}">1</td>
+                <td>
+                    <form th:action="@{/books/{bookId}/comments/{id}(bookId=${book.id}, id=${comment.id})}" method="post">
+                        <input type="text" th:name="text" th:value="${comment.text}" />
+                        <button type="submit">Save</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/books/{bookId}/comments/{id}(bookId=${book.id}, id=${comment.id})}" method="post">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
