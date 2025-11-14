@@ -1,0 +1,73 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    kotlin("jvm") version "1.9.0"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.9.0"
+    id("org.springframework.boot") version "3.3.2"
+    id("io.spring.dependency-management") version "1.1.0"
+    id("checkstyle")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("plugin.allopen") version "1.9.0"
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+}
+
+group = "ru.otus.hw"
+version = "1.0"
+
+object Versions {
+    const val kotestJunit = "5.8.1"
+    const val kotestArrow = "1.2.5"
+
+    const val reflections = "0.10.2"
+
+    const val mockk = "1.14.3"
+    const val springMockk = "4.0.2"
+
+    const val jackson = "2.20.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtimeOnly("com.h2database:h2")
+
+    implementation(kotlin("stdlib"))
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("io.mockk:mockk:${Versions.mockk}")
+    implementation("com.ninja-squad:springmockk:${Versions.springMockk}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Versions.jackson}")
+
+    testImplementation("io.kotest:kotest-runner-junit5:${Versions.kotestJunit}")
+    testImplementation("io.kotest.extensions:kotest-assertions-arrow-jvm:${Versions.kotestArrow}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.reflections:reflections:${Versions.reflections}")
+}
+
+checkstyle {
+    toolVersion = "10.15.0"
+    config = resources.text.fromUri("https://raw.githubusercontent.com/OtusTeam/Spring/master/checkstyle.xml")
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    named<ShadowJar>("shadowJar") {
+        archiveBaseName.set(project.name)
+        archiveClassifier.set("")
+        archiveVersion.set(project.version.toString())
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
