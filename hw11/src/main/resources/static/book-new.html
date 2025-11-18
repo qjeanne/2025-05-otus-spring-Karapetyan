@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <title>New Book</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 12px; }
+        label { display: block; margin-top:8px; }
+        select[multiple] { min-height: 80px; }
+    </style>
+</head>
+<body>
+<div id="header-target"></div>
+
+<h3>Book</h3>
+<form id="bookForm">
+    <label>Title: <input type="text" id="title" required></label>
+
+    <label>Author:
+        <select id="authorId" required></select>
+    </label>
+
+    <label>Genre:
+        <select id="genresIds" multiple></select>
+    </label>
+
+    <button type="submit">Save</button>
+    <button type="button" id="cancelBtn">Cancel</button>
+</form>
+
+<script src="/js/api.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/book-new.js"></script>
+</body>
+</html>
