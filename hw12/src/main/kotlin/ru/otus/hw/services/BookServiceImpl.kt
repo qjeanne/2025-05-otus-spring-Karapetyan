@@ -38,7 +38,10 @@ open class BookServiceImpl(
         save(id, title, authorId, genresIds)
 
     @Transactional
-    override fun deleteById(id: String): Mono<Void> = bookRepository.deleteById(id)
+    override fun deleteById(id: String): Mono<Void> =
+        commentRepository.deleteAllByBookId(id)
+            .then(bookRepository.deleteById(id))
+
 
     private fun save(id: String?, title: String, authorId: String, genresIds: Set<String>): Mono<BookResponseDto> {
         require(genresIds.isNotEmpty()) { "Genres ids must not be null" }
